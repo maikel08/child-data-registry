@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import type { Student } from "./StudentForm";
@@ -83,22 +84,38 @@ export const AttendanceControl = ({ students }: AttendanceControlProps) => {
 
       {selectedGroup && (
         <div className="mt-6">
-          <h3 className="text-lg font-semibold mb-4">Lista de Estudiantes</h3>
-          <div className="space-y-4">
-            {filteredStudents.map((student) => (
-              <div key={student.id} className="flex items-center space-x-4">
-                <Checkbox
-                  id={student.id}
-                  checked={attendance[student.id] || false}
-                  onCheckedChange={(checked) =>
-                    handleAttendanceChange(student.id, checked as boolean)
-                  }
-                />
-                <label htmlFor={student.id} className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                  {`${student.firstName} ${student.lastName1} ${student.lastName2}`}
-                </label>
-              </div>
-            ))}
+          <h3 className="text-lg font-semibold mb-4">Lista de Estudiantes - {selectedGroup}</h3>
+          <div className="border rounded-lg">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-[50px]">Asistencia</TableHead>
+                  <TableHead>Nombre</TableHead>
+                  <TableHead>Apellidos</TableHead>
+                  <TableHead>Identificación</TableHead>
+                  <TableHead>Aula</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {filteredStudents.map((student) => (
+                  <TableRow key={student.id}>
+                    <TableCell>
+                      <Checkbox
+                        id={student.id}
+                        checked={attendance[student.id] || false}
+                        onCheckedChange={(checked) =>
+                          handleAttendanceChange(student.id, checked as boolean)
+                        }
+                      />
+                    </TableCell>
+                    <TableCell>{student.firstName}</TableCell>
+                    <TableCell>{`${student.lastName1} ${student.lastName2}`}</TableCell>
+                    <TableCell>{student.identification}</TableCell>
+                    <TableCell>{student.classroom}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
           </div>
           <Button onClick={handleSaveAttendance} className="mt-4">
             Guardar Asistencia
