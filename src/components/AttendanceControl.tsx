@@ -2,10 +2,19 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import type { Student } from "./StudentForm";
 import { toast } from "sonner";
+
+// Importamos la misma lista de grupos que se usa en StudentForm
+const GROUPS = [
+  "Grupo A",
+  "Grupo B",
+  "Grupo C",
+  "Grupo D",
+];
 
 interface AttendanceControlProps {
   students: Student[];
@@ -16,7 +25,6 @@ export const AttendanceControl = ({ students }: AttendanceControlProps) => {
   const [selectedGroup, setSelectedGroup] = useState("");
   const [attendance, setAttendance] = useState<Record<string, boolean>>({});
 
-  const groups = Array.from(new Set(students.map((s) => s.group)));
   const filteredStudents = students.filter((s) => s.group === selectedGroup);
 
   const handleAttendanceChange = (studentId: string, checked: boolean) => {
@@ -55,18 +63,21 @@ export const AttendanceControl = ({ students }: AttendanceControlProps) => {
 
         <div>
           <h3 className="text-lg font-semibold mb-4">Seleccionar Grupo</h3>
-          <select
+          <Select
             value={selectedGroup}
-            onChange={(e) => setSelectedGroup(e.target.value)}
-            className="w-full p-2 border rounded-md"
+            onValueChange={setSelectedGroup}
           >
-            <option value="">Seleccione un grupo</option>
-            {groups.map((group) => (
-              <option key={group} value={group}>
-                {group}
-              </option>
-            ))}
-          </select>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Seleccione un grupo" />
+            </SelectTrigger>
+            <SelectContent>
+              {GROUPS.map((group) => (
+                <SelectItem key={group} value={group}>
+                  {group}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
       </div>
 
