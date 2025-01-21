@@ -21,6 +21,22 @@ interface StudentFormProps {
   onSubmit: (student: Student) => void;
 }
 
+// Listas predefinidas
+const CLASSROOMS = [
+  "Aula 1",
+  "Aula 2",
+  "Aula 3",
+  "Aula 4",
+  "Aula 5",
+];
+
+const GROUPS = [
+  "Grupo A",
+  "Grupo B",
+  "Grupo C",
+  "Grupo D",
+];
+
 export const StudentForm = ({ onSubmit }: StudentFormProps) => {
   const [formData, setFormData] = useState({
     firstName: "",
@@ -57,6 +73,13 @@ export const StudentForm = ({ onSubmit }: StudentFormProps) => {
     setFormData((prev) => ({
       ...prev,
       [e.target.name]: e.target.value,
+    }));
+  };
+
+  const handleSelectChange = (value: string, field: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      [field]: value,
     }));
   };
 
@@ -133,24 +156,40 @@ export const StudentForm = ({ onSubmit }: StudentFormProps) => {
 
         <div className="space-y-2">
           <Label htmlFor="classroom">Aula</Label>
-          <Input
-            id="classroom"
-            name="classroom"
+          <Select
             value={formData.classroom}
-            onChange={handleChange}
-            required
-          />
+            onValueChange={(value) => handleSelectChange(value, "classroom")}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Seleccione un aula" />
+            </SelectTrigger>
+            <SelectContent>
+              {CLASSROOMS.map((classroom) => (
+                <SelectItem key={classroom} value={classroom}>
+                  {classroom}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
 
         <div className="space-y-2">
           <Label htmlFor="group">Grupo</Label>
-          <Input
-            id="group"
-            name="group"
+          <Select
             value={formData.group}
-            onChange={handleChange}
-            required
-          />
+            onValueChange={(value) => handleSelectChange(value, "group")}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Seleccione un grupo" />
+            </SelectTrigger>
+            <SelectContent>
+              {GROUPS.map((group) => (
+                <SelectItem key={group} value={group}>
+                  {group}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
       </div>
 
