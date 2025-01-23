@@ -44,6 +44,44 @@ export type Database = {
           },
         ]
       }
+      psychological_tests: {
+        Row: {
+          created_at: string
+          file_name: string
+          file_path: string
+          id: string
+          student_id: string
+          test_date: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          file_name: string
+          file_path: string
+          id?: string
+          student_id: string
+          test_date: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          file_name?: string
+          file_path?: string
+          id?: string
+          student_id?: string
+          test_date?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "psychological_tests_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "students"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       students: {
         Row: {
           classroom: string

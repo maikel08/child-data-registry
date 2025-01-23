@@ -5,6 +5,8 @@ import { StudentList } from "@/components/StudentList";
 import { AttendanceControl } from "@/components/AttendanceControl";
 import { AttendanceReport } from "@/components/AttendanceReport";
 import { MonthlyAttendanceList } from "@/components/MonthlyAttendanceList";
+import { AttendanceDashboard } from "@/components/AttendanceDashboard";
+import { PsychologicalTests } from "@/components/PsychologicalTests";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -53,12 +55,14 @@ const Index = () => {
       <h1 className="text-3xl font-bold text-center mb-8">Sistema de Gestión Estudiantil</h1>
       
       <Tabs defaultValue="register" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="grid w-full grid-cols-7">
           <TabsTrigger value="register">Registro</TabsTrigger>
           <TabsTrigger value="list">Lista de Estudiantes</TabsTrigger>
           <TabsTrigger value="attendance">Control de Asistencia</TabsTrigger>
           <TabsTrigger value="monthly">Lista Mensual</TabsTrigger>
           <TabsTrigger value="report">Reporte de Asistencia</TabsTrigger>
+          <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
+          <TabsTrigger value="psychological">Pruebas Psicológicas</TabsTrigger>
         </TabsList>
 
         <TabsContent value="register">
@@ -79,6 +83,14 @@ const Index = () => {
 
         <TabsContent value="report">
           <AttendanceReport students={students} />
+        </TabsContent>
+
+        <TabsContent value="dashboard">
+          <AttendanceDashboard students={students} />
+        </TabsContent>
+
+        <TabsContent value="psychological">
+          <PsychologicalTests students={students} />
         </TabsContent>
       </Tabs>
     </div>
