@@ -162,7 +162,7 @@ export const MonthlyAttendanceList = ({ students }: MonthlyAttendanceListProps) 
         <div className="mt-6">
           <div className="flex justify-between items-center mb-4">
             <h3 className="text-lg font-semibold">
-              Lista del Mes: {format(selectedMonth, "MMMM yyyy", { locale: es })}
+              Lista de Asistencia: {selectedGroup} - {format(selectedMonth, "MMMM yyyy", { locale: es })}
             </h3>
             <div className="space-x-2">
               {!isEditing ? (
