@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { format, isWeekend, startOfMonth, endOfMonth, eachDayOfInterval } from "date-fns";
+import { es } from "date-fns/locale";
 import type { Student } from "./StudentForm";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
