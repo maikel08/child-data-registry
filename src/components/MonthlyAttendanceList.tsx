@@ -1,16 +1,11 @@
 import { useState, useEffect } from "react";
-import { Calendar } from "@/components/ui/calendar";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Button } from "@/components/ui/button";
 import { format, isWeekend, startOfMonth, endOfMonth, eachDayOfInterval } from "date-fns";
-import { es } from "date-fns/locale";
 import type { Student } from "./StudentForm";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-
-const GROUPS = ["Grupo A", "Grupo B", "Grupo C", "Grupo D"];
+import { MonthlyAttendanceHeader } from "./attendance/MonthlyAttendanceHeader";
+import { AttendanceTable } from "./attendance/AttendanceTable";
+import { AttendanceActions } from "./attendance/AttendanceActions";
 
 interface MonthlyAttendanceListProps {
   students: Student[];
@@ -124,39 +119,12 @@ export const MonthlyAttendanceList = ({ students }: MonthlyAttendanceListProps) 
 
   return (
     <div className="space-y-6 max-w-full mx-auto p-6 bg-white rounded-lg shadow overflow-x-auto">
-      <h2 className="text-2xl font-bold text-gray-900">Lista de Asistencia Mensual</h2>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
-          <h3 className="text-lg font-semibold mb-4">Seleccionar Mes</h3>
-          <Calendar
-            mode="single"
-            selected={selectedMonth}
-            onSelect={(date) => date && setSelectedMonth(date)}
-            locale={es}
-            className="rounded-md border"
-          />
-        </div>
-
-        <div>
-          <h3 className="text-lg font-semibold mb-4">Seleccionar Grupo</h3>
-          <Select
-            value={selectedGroup}
-            onValueChange={setSelectedGroup}
-          >
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Seleccione un grupo" />
-            </SelectTrigger>
-            <SelectContent>
-              {GROUPS.map((group) => (
-                <SelectItem key={group} value={group}>
-                  {group}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
+      <MonthlyAttendanceHeader
+        selectedMonth={selectedMonth}
+        setSelectedMonth={setSelectedMonth}
+        selectedGroup={selectedGroup}
+        setSelectedGroup={setSelectedGroup}
+      />
 
       {selectedGroup && (
         <div className="mt-6">
@@ -164,71 +132,24 @@ export const MonthlyAttendanceList = ({ students }: MonthlyAttendanceListProps) 
             <h3 className="text-lg font-semibold">
               Lista de Asistencia: {selectedGroup} - {format(selectedMonth, "MMMM yyyy", { locale: es })}
             </h3>
-            <div className="space-x-2">
-              {!isEditing ? (
-                <Button onClick={() => setIsEditing(true)}>
-                  Editar Asistencia
-                </Button>
-              ) : (
-                <>
-                  <Button variant="outline" onClick={() => {
-                    setIsEditing(false);
-                    fetchAttendanceData();
-                  }}>
-                    Cancelar
-                  </Button>
-                  <Button onClick={handleSaveAttendance}>
-                    Guardar Cambios
-                  </Button>
-                </>
-              )}
-            </div>
+            <AttendanceActions
+              isEditing={isEditing}
+              onEdit={() => setIsEditing(true)}
+              onCancel={() => {
+                setIsEditing(false);
+                fetchAttendanceData();
+              }}
+              onSave={handleSaveAttendance}
+            />
           </div>
 
-          <div className="border rounded-lg">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Nombre</TableHead>
-                  <TableHead>Apellidos</TableHead>
-                  {workingDays.map((day) => (
-                    <TableHead key={day.toISOString()} className="text-center whitespace-nowrap">
-                      {format(day, "dd MMM", { locale: es })}
-                    </TableHead>
-                  ))}
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredStudents.map((student) => (
-                  <TableRow key={student.id}>
-                    <TableCell>{student.firstName}</TableCell>
-                    <TableCell className="whitespace-nowrap">{`${student.lastName1} ${student.lastName2}`}</TableCell>
-                    {workingDays.map((day) => {
-                      const dateStr = format(day, "yyyy-MM-dd");
-                      const isPresent = attendanceData[student.id]?.[dateStr] ?? false;
-
-                      return (
-                        <TableCell key={day.toISOString()} className="text-center">
-                          {isEditing ? (
-                            <Checkbox
-                              checked={isPresent}
-                              onCheckedChange={(checked) =>
-                                handleAttendanceChange(student.id, day, checked as boolean)
-                              }
-                            />
-                          ) : (
-                            <span className={isPresent ? "text-green-600" : "text-red-600"}>
-                              {isPresent ? "✓" : "✗"}
-                            </span>
-                          )}
-                        </TableCell>
-                      );
-                    })}
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
+          <AttendanceTable
+            workingDays={workingDays}
+            filteredStudents={filteredStudents}
+            attendanceData={attendanceData}
+            isEditing={isEditing}
+            handleAttendanceChange={handleAttendanceChange}
+          />
         </div>
       )}
     </div>
