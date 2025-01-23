@@ -1,12 +1,13 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Calendar } from "@/components/ui/calendar";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { format, isWeekend, startOfMonth, endOfMonth, eachDayOfInterval } from "date-fns";
 import { es } from "date-fns/locale";
 import type { Student } from "./StudentForm";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
-// Importamos la misma lista de grupos que se usa en otros componentes
 const GROUPS = ["Grupo A", "Grupo B", "Grupo C", "Grupo D"];
 
 interface AttendanceReportProps {
@@ -21,8 +22,8 @@ interface AttendanceRecord {
 export const AttendanceReport = ({ students }: AttendanceReportProps) => {
   const [selectedMonth, setSelectedMonth] = useState<Date>(new Date());
   const [selectedGroup, setSelectedGroup] = useState("");
+  const [attendanceData, setAttendanceData] = useState<Record<string, AttendanceRecord>>({});
 
-  // Obtener todos los días del mes seleccionado (excluyendo fines de semana)
   const getDaysInMonth = (date: Date) => {
     const start = startOfMonth(date);
     const end = endOfMonth(date);
@@ -31,7 +32,6 @@ export const AttendanceReport = ({ students }: AttendanceReportProps) => {
 
   const workingDays = getDaysInMonth(selectedMonth);
 
-  // Filtrar y ordenar estudiantes por apellidos y nombre
   const filteredStudents = students
     .filter((s) => s.group === selectedGroup)
     .sort((a, b) => {
@@ -44,13 +44,45 @@ export const AttendanceReport = ({ students }: AttendanceReportProps) => {
       return a.firstName.localeCompare(b.firstName);
     });
 
-  // Simular registros de asistencia (esto debería venir de tu base de datos)
-  const getAttendanceRecord = (studentId: string): AttendanceRecord => {
-    // Aquí deberías obtener los datos reales de asistencia
-    return {
-      present: Math.floor(Math.random() * workingDays.length),
-      absent: 0, // Se calculará después
-    };
+  useEffect(() => {
+    if (selectedGroup && selectedMonth) {
+      fetchAttendanceData();
+    }
+  }, [selectedGroup, selectedMonth]);
+
+  const fetchAttendanceData = async () => {
+    try {
+      const startDate = startOfMonth(selectedMonth);
+      const endDate = endOfMonth(selectedMonth);
+
+      const { data, error } = await supabase
+        .from("attendance")
+        .select("*")
+        .gte("date", format(startDate, "yyyy-MM-dd"))
+        .lte("date", format(endDate, "yyyy-MM-dd"));
+
+      if (error) throw error;
+
+      const attendanceCount: Record<string, AttendanceRecord> = {};
+
+      if (data) {
+        data.forEach((record) => {
+          if (!attendanceCount[record.student_id]) {
+            attendanceCount[record.student_id] = { present: 0, absent: 0 };
+          }
+          if (record.is_present) {
+            attendanceCount[record.student_id].present += 1;
+          } else {
+            attendanceCount[record.student_id].absent += 1;
+          }
+        });
+      }
+
+      setAttendanceData(attendanceCount);
+    } catch (error) {
+      console.error("Error al cargar datos de asistencia:", error);
+      toast.error("Error al cargar el reporte de asistencia");
+    }
   };
 
   return (
@@ -107,8 +139,7 @@ export const AttendanceReport = ({ students }: AttendanceReportProps) => {
               </TableHeader>
               <TableBody>
                 {filteredStudents.map((student) => {
-                  const record = getAttendanceRecord(student.id);
-                  record.absent = workingDays.length - record.present;
+                  const record = attendanceData[student.id] || { present: 0, absent: workingDays.length };
                   
                   return (
                     <TableRow key={student.id}>
@@ -116,7 +147,7 @@ export const AttendanceReport = ({ students }: AttendanceReportProps) => {
                       <TableCell>{`${student.lastName1} ${student.lastName2}`}</TableCell>
                       <TableCell className="text-center">{workingDays.length}</TableCell>
                       <TableCell className="text-center">{record.present}</TableCell>
-                      <TableCell className="text-center">{record.absent}</TableCell>
+                      <TableCell className="text-center">{workingDays.length - record.present}</TableCell>
                     </TableRow>
                   );
                 })}

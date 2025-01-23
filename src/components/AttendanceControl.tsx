@@ -8,14 +8,9 @@ import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import type { Student } from "./StudentForm";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
-// Importamos la misma lista de grupos que se usa en StudentForm
-const GROUPS = [
-  "Grupo A",
-  "Grupo B",
-  "Grupo C",
-  "Grupo D",
-];
+const GROUPS = ["Grupo A", "Grupo B", "Grupo C", "Grupo D"];
 
 interface AttendanceControlProps {
   students: Student[];
@@ -35,15 +30,34 @@ export const AttendanceControl = ({ students }: AttendanceControlProps) => {
     }));
   };
 
-  const handleSaveAttendance = () => {
-    // Aquí se implementaría la lógica para guardar la asistencia
-    console.log({
-      date: format(date, "yyyy-MM-dd"),
-      group: selectedGroup,
-      attendance,
-    });
-    toast.success("Asistencia registrada exitosamente");
-    setAttendance({});
+  const handleSaveAttendance = async () => {
+    try {
+      const attendanceRecords = Object.entries(attendance).map(([studentId, isPresent]) => ({
+        student_id: studentId,
+        date: format(date, "yyyy-MM-dd"),
+        is_present: isPresent,
+      }));
+
+      const { error } = await supabase
+        .from("attendance")
+        .upsert(attendanceRecords, {
+          onConflict: "student_id,date",
+        });
+
+      if (error) throw error;
+
+      console.log({
+        date: format(date, "yyyy-MM-dd"),
+        group: selectedGroup,
+        attendance,
+      });
+
+      toast.success("Asistencia registrada exitosamente");
+      setAttendance({});
+    } catch (error) {
+      console.error("Error al guardar la asistencia:", error);
+      toast.error("Error al guardar la asistencia");
+    }
   };
 
   return (
