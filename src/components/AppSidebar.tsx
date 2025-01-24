@@ -10,7 +10,6 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { useState } from "react";
 
 const items = [
   {
@@ -57,32 +56,23 @@ interface AppSidebarProps {
 
 export function AppSidebar({ activeTab, onTabChange }: AppSidebarProps) {
   const { setOpenMobile } = useSidebar();
-  const [showAllTabs, setShowAllTabs] = useState(false);
-  
-  const handleMenuClick = (value: string) => {
-    onTabChange(value);
-    setOpenMobile(false);
-    if (value === "register") {
-      setShowAllTabs(true);
-    }
-  };
-
-  const visibleItems = showAllTabs ? items : items.filter(item => item.value === "register");
   
   return (
     <Sidebar>
-      <SidebarContent className="bg-primary">
+      <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel className="text-white">Menú Principal</SidebarGroupLabel>
+          <SidebarGroupLabel>Menú Principal</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {visibleItems.map((item) => (
+              {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton
                     tooltip={item.title}
                     data-active={activeTab === item.value}
-                    onClick={() => handleMenuClick(item.value)}
-                    className="text-white hover:bg-secondary"
+                    onClick={() => {
+                      onTabChange(item.value);
+                      setOpenMobile(false);
+                    }}
                   >
                     <item.icon className="h-4 w-4" />
                     <span>{item.title}</span>
