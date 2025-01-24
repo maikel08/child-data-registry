@@ -9,6 +9,8 @@ import { AttendanceDashboard } from "@/components/AttendanceDashboard";
 import { PsychologicalTests } from "@/components/PsychologicalTests";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/AppSidebar";
 
 const Index = () => {
   const [students, setStudents] = useState<Student[]>([]);
@@ -51,49 +53,59 @@ const Index = () => {
   };
 
   return (
-    <div className="container py-8">
-      <h1 className="text-3xl font-bold text-center mb-8">Sistema de Gestión Estudiantil</h1>
-      
-      <Tabs defaultValue="register" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-7">
-          <TabsTrigger value="register">Registro</TabsTrigger>
-          <TabsTrigger value="list">Lista de Estudiantes</TabsTrigger>
-          <TabsTrigger value="attendance">Control de Asistencia</TabsTrigger>
-          <TabsTrigger value="monthly">Lista Mensual</TabsTrigger>
-          <TabsTrigger value="report">Reporte de Asistencia</TabsTrigger>
-          <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
-          <TabsTrigger value="psychological">Pruebas Psicológicas</TabsTrigger>
-        </TabsList>
+    <SidebarProvider>
+      <div className="min-h-screen flex w-full">
+        <AppSidebar />
+        <div className="flex-1">
+          <div className="container py-8">
+            <div className="flex items-center justify-between mb-8">
+              <h1 className="text-3xl font-bold">Sistema de Gestión Estudiantil</h1>
+              <SidebarTrigger />
+            </div>
+            
+            <Tabs defaultValue="register" className="space-y-6">
+              <TabsList className="grid w-full grid-cols-7">
+                <TabsTrigger value="register">Registro</TabsTrigger>
+                <TabsTrigger value="list">Lista de Estudiantes</TabsTrigger>
+                <TabsTrigger value="attendance">Control de Asistencia</TabsTrigger>
+                <TabsTrigger value="monthly">Lista Mensual</TabsTrigger>
+                <TabsTrigger value="report">Reporte de Asistencia</TabsTrigger>
+                <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
+                <TabsTrigger value="psychological">Pruebas Psicológicas</TabsTrigger>
+              </TabsList>
 
-        <TabsContent value="register">
-          <StudentForm onSubmit={handleStudentSubmit} />
-        </TabsContent>
+              <TabsContent value="register">
+                <StudentForm onSubmit={handleStudentSubmit} />
+              </TabsContent>
 
-        <TabsContent value="list">
-          <StudentList students={students} />
-        </TabsContent>
+              <TabsContent value="list">
+                <StudentList students={students} />
+              </TabsContent>
 
-        <TabsContent value="attendance">
-          <AttendanceControl students={students} />
-        </TabsContent>
+              <TabsContent value="attendance">
+                <AttendanceControl students={students} />
+              </TabsContent>
 
-        <TabsContent value="monthly">
-          <MonthlyAttendanceList students={students} />
-        </TabsContent>
+              <TabsContent value="monthly">
+                <MonthlyAttendanceList students={students} />
+              </TabsContent>
 
-        <TabsContent value="report">
-          <AttendanceReport students={students} />
-        </TabsContent>
+              <TabsContent value="report">
+                <AttendanceReport students={students} />
+              </TabsContent>
 
-        <TabsContent value="dashboard">
-          <AttendanceDashboard students={students} />
-        </TabsContent>
+              <TabsContent value="dashboard">
+                <AttendanceDashboard students={students} />
+              </TabsContent>
 
-        <TabsContent value="psychological">
-          <PsychologicalTests students={students} />
-        </TabsContent>
-      </Tabs>
-    </div>
+              <TabsContent value="psychological">
+                <PsychologicalTests students={students} />
+              </TabsContent>
+            </Tabs>
+          </div>
+        </div>
+      </div>
+    </SidebarProvider>
   );
 };
 
