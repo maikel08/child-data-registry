@@ -49,7 +49,12 @@ const items = [
   },
 ];
 
-export function AppSidebar() {
+interface AppSidebarProps {
+  activeTab: string;
+  onTabChange: (tab: string) => void;
+}
+
+export function AppSidebar({ activeTab, onTabChange }: AppSidebarProps) {
   const { setOpenMobile } = useSidebar();
   
   return (
@@ -63,12 +68,10 @@ export function AppSidebar() {
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton
                     tooltip={item.title}
+                    data-active={activeTab === item.value}
                     onClick={() => {
-                      const element = document.querySelector(`[value="${item.value}"]`);
-                      if (element) {
-                        (element as HTMLElement).click();
-                        setOpenMobile(false); // Close mobile menu after selection
-                      }
+                      onTabChange(item.value);
+                      setOpenMobile(false);
                     }}
                   >
                     <item.icon className="h-4 w-4" />

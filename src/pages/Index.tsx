@@ -56,7 +56,7 @@ const Index = () => {
   return (
     <SidebarProvider defaultOpen>
       <div className="min-h-screen flex w-full">
-        <AppSidebar />
+        <AppSidebar activeTab={activeTab} onTabChange={setActiveTab} />
         <SidebarInset>
           <div className="container py-8">
             <div className="flex items-center justify-between mb-8">
