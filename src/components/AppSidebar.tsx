@@ -12,28 +12,38 @@ import {
 
 const items = [
   {
-    title: "Inicio",
-    url: "/",
+    title: "Registro",
+    value: "register",
     icon: Home,
   },
   {
     title: "Lista de Estudiantes",
-    url: "#list",
+    value: "list",
     icon: Users,
   },
   {
     title: "Control de Asistencia",
-    url: "#attendance",
+    value: "attendance",
     icon: Calendar,
   },
   {
+    title: "Lista Mensual",
+    value: "monthly",
+    icon: Calendar,
+  },
+  {
+    title: "Reporte de Asistencia",
+    value: "report",
+    icon: BarChart2,
+  },
+  {
     title: "Dashboard",
-    url: "#dashboard",
+    value: "dashboard",
     icon: BarChart2,
   },
   {
     title: "Pruebas Psicológicas",
-    url: "#psychological",
+    value: "psychological",
     icon: Brain,
   },
 ];
@@ -51,7 +61,7 @@ export function AppSidebar() {
                   <SidebarMenuButton
                     tooltip={item.title}
                     onClick={() => {
-                      const element = document.querySelector(`[value="${item.url.replace("#", "")}"]`);
+                      const element = document.querySelector(`[value="${item.value}"]`);
                       if (element) {
                         (element as HTMLElement).click();
                       }
