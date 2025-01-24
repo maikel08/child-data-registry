@@ -8,6 +8,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from "@/components/ui/sidebar";
 
 const items = [
@@ -49,6 +50,8 @@ const items = [
 ];
 
 export function AppSidebar() {
+  const { setOpenMobile } = useSidebar();
+  
   return (
     <Sidebar>
       <SidebarContent>
@@ -64,6 +67,7 @@ export function AppSidebar() {
                       const element = document.querySelector(`[value="${item.value}"]`);
                       if (element) {
                         (element as HTMLElement).click();
+                        setOpenMobile(false); // Close mobile menu after selection
                       }
                     }}
                   >

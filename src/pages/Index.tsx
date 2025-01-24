@@ -9,11 +9,12 @@ import { AttendanceDashboard } from "@/components/AttendanceDashboard";
 import { PsychologicalTests } from "@/components/PsychologicalTests";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarProvider, SidebarTrigger, SidebarInset } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 
 const Index = () => {
   const [students, setStudents] = useState<Student[]>([]);
+  const [activeTab, setActiveTab] = useState("register");
 
   useEffect(() => {
     fetchStudents();
@@ -53,17 +54,17 @@ const Index = () => {
   };
 
   return (
-    <SidebarProvider>
+    <SidebarProvider defaultOpen>
       <div className="min-h-screen flex w-full">
         <AppSidebar />
-        <div className="flex-1">
+        <SidebarInset>
           <div className="container py-8">
             <div className="flex items-center justify-between mb-8">
               <h1 className="text-3xl font-bold">Sistema de Gestión Estudiantil</h1>
-              <SidebarTrigger />
+              <SidebarTrigger className="md:hidden" />
             </div>
             
-            <Tabs defaultValue="register" className="space-y-6">
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
               <TabsList className="grid w-full grid-cols-7">
                 <TabsTrigger value="register">Registro</TabsTrigger>
                 <TabsTrigger value="list">Lista de Estudiantes</TabsTrigger>
@@ -103,7 +104,7 @@ const Index = () => {
               </TabsContent>
             </Tabs>
           </div>
-        </div>
+        </SidebarInset>
       </div>
     </SidebarProvider>
   );
