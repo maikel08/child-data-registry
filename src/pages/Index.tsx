@@ -81,43 +81,43 @@ const Index = () => {
 
               <div className="mt-6">
                 {activeTab === "register" && (
-                  <TabsContent value="register" forceMount={false}>
+                  <TabsContent value="register">
                     <StudentForm onSubmit={handleStudentSubmit} />
                   </TabsContent>
                 )}
 
                 {activeTab === "list" && (
-                  <TabsContent value="list" forceMount={false}>
+                  <TabsContent value="list">
                     <StudentList students={students} />
                   </TabsContent>
                 )}
 
                 {activeTab === "attendance" && (
-                  <TabsContent value="attendance" forceMount={false}>
+                  <TabsContent value="attendance">
                     <AttendanceControl students={students} />
                   </TabsContent>
                 )}
 
                 {activeTab === "monthly" && (
-                  <TabsContent value="monthly" forceMount={false}>
+                  <TabsContent value="monthly">
                     <MonthlyAttendanceList students={students} />
                   </TabsContent>
                 )}
 
                 {activeTab === "report" && (
-                  <TabsContent value="report" forceMount={false}>
+                  <TabsContent value="report">
                     <AttendanceReport students={students} />
                   </TabsContent>
                 )}
 
                 {activeTab === "dashboard" && (
-                  <TabsContent value="dashboard" forceMount={false}>
+                  <TabsContent value="dashboard">
                     <AttendanceDashboard students={students} />
                   </TabsContent>
                 )}
 
                 {activeTab === "psychological" && (
-                  <TabsContent value="psychological" forceMount={false}>
+                  <TabsContent value="psychological">
                     <PsychologicalTests students={students} />
                   </TabsContent>
                 )}
