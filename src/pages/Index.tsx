@@ -53,10 +53,14 @@ const Index = () => {
     setStudents((prev) => [...prev, student]);
   };
 
+  const handleTabChange = (value: string) => {
+    setActiveTab(value);
+  };
+
   return (
     <SidebarProvider defaultOpen>
       <div className="min-h-screen flex w-full">
-        <AppSidebar activeTab={activeTab} onTabChange={setActiveTab} />
+        <AppSidebar activeTab={activeTab} onTabChange={handleTabChange} />
         <SidebarInset>
           <div className="container py-8">
             <div className="flex items-center justify-between mb-8">
@@ -64,8 +68,8 @@ const Index = () => {
               <SidebarTrigger className="md:hidden" />
             </div>
             
-            <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-              <TabsList className="grid w-full grid-cols-7">
+            <Tabs value={activeTab} onValueChange={handleTabChange} className="space-y-6">
+              <TabsList className="hidden md:grid w-full grid-cols-7">
                 <TabsTrigger value="register">Registro</TabsTrigger>
                 <TabsTrigger value="list">Lista de Estudiantes</TabsTrigger>
                 <TabsTrigger value="attendance">Control de Asistencia</TabsTrigger>
@@ -75,33 +79,49 @@ const Index = () => {
                 <TabsTrigger value="psychological">Pruebas Psicológicas</TabsTrigger>
               </TabsList>
 
-              <TabsContent value="register">
-                <StudentForm onSubmit={handleStudentSubmit} />
-              </TabsContent>
+              <div className="mt-6">
+                {activeTab === "register" && (
+                  <TabsContent value="register" forceMount={false}>
+                    <StudentForm onSubmit={handleStudentSubmit} />
+                  </TabsContent>
+                )}
 
-              <TabsContent value="list">
-                <StudentList students={students} />
-              </TabsContent>
+                {activeTab === "list" && (
+                  <TabsContent value="list" forceMount={false}>
+                    <StudentList students={students} />
+                  </TabsContent>
+                )}
 
-              <TabsContent value="attendance">
-                <AttendanceControl students={students} />
-              </TabsContent>
+                {activeTab === "attendance" && (
+                  <TabsContent value="attendance" forceMount={false}>
+                    <AttendanceControl students={students} />
+                  </TabsContent>
+                )}
 
-              <TabsContent value="monthly">
-                <MonthlyAttendanceList students={students} />
-              </TabsContent>
+                {activeTab === "monthly" && (
+                  <TabsContent value="monthly" forceMount={false}>
+                    <MonthlyAttendanceList students={students} />
+                  </TabsContent>
+                )}
 
-              <TabsContent value="report">
-                <AttendanceReport students={students} />
-              </TabsContent>
+                {activeTab === "report" && (
+                  <TabsContent value="report" forceMount={false}>
+                    <AttendanceReport students={students} />
+                  </TabsContent>
+                )}
 
-              <TabsContent value="dashboard">
-                <AttendanceDashboard students={students} />
-              </TabsContent>
+                {activeTab === "dashboard" && (
+                  <TabsContent value="dashboard" forceMount={false}>
+                    <AttendanceDashboard students={students} />
+                  </TabsContent>
+                )}
 
-              <TabsContent value="psychological">
-                <PsychologicalTests students={students} />
-              </TabsContent>
+                {activeTab === "psychological" && (
+                  <TabsContent value="psychological" forceMount={false}>
+                    <PsychologicalTests students={students} />
+                  </TabsContent>
+                )}
+              </div>
             </Tabs>
           </div>
         </SidebarInset>
