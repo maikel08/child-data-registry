@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { StudentForm, type Student } from "@/components/StudentForm";
@@ -63,9 +64,15 @@ const Index = () => {
         <AppSidebar activeTab={activeTab} onTabChange={handleTabChange} />
         <SidebarInset>
           <div className="container py-8">
-            <div className="flex items-center justify-between mb-8">
+            <div className="flex items-center mb-8">
+              <SidebarTrigger className="md:hidden mr-4 text-white bg-sidebar hover:bg-sidebar-accent p-2 rounded-lg">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6">
+                  <line x1="4" y1="12" x2="20" y2="12"></line>
+                  <line x1="4" y1="6" x2="20" y2="6"></line>
+                  <line x1="4" y1="18" x2="20" y2="18"></line>
+                </svg>
+              </SidebarTrigger>
               <h1 className="text-3xl font-bold">Sistema de Gestión Estudiantil</h1>
-              <SidebarTrigger className="md:hidden" />
             </div>
             
             <Tabs value={activeTab} onValueChange={handleTabChange} className="space-y-6">
